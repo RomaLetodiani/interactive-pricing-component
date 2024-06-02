@@ -3,6 +3,7 @@ import Button from './UI/Button.vue'
 import { ref, computed } from 'vue'
 import { useMediaQuery } from '../composable/useMediaQuery'
 import checkIcon from '../assets/images/icon-check.svg'
+import Slider from './Slider.vue'
 
 const isMobile = useMediaQuery('(max-width: 767px)')
 const liTexts = ['Unlimited Websites', '100% Data Ownership', 'Email Reports']
@@ -12,8 +13,7 @@ const sliderValue = ref(10)
 // Compute the price based on the slider value and billing cycle
 const price = computed(() => {
   const basePrice = sliderValue.value
-  console.log('🚀 ~ price ~ basePrice:', basePrice)
-  return isYearlyBilling.value ? (basePrice * 0.75).toFixed(2) : basePrice.toFixed(2)
+  return !isYearlyBilling.value ? (basePrice * 0.1).toFixed(2) : (basePrice * 1.2 * 0.75).toFixed(2)
 })
 </script>
 <template>
@@ -29,10 +29,13 @@ const price = computed(() => {
             ]"
           >
             <span class="w-3ch">${{ price }}</span>
-            <span class="text-[hsl(225,20%,60%)] text-lg">/Month</span>
+            <span class="text-[hsl(225,20%,60%)] text-lg"
+              >/
+              <span>{{ isYearlyBilling ? 'Year' : 'Month' }}</span>
+            </span>
           </h1>
         </div>
-        <input type="range" min="10" max="20" step="1" v-model="sliderValue" class="w-full my-5" />
+        <Slider :min="100" :max="500" v-model="sliderValue" />
         <h1
           :class="[
             isMobile ? 'block' : 'hidden',
@@ -40,7 +43,10 @@ const price = computed(() => {
           ]"
         >
           <span class="w-3ch">${{ price }}</span>
-          <span class="text-[hsl(225,20%,60%)] text-lg">/Month</span>
+          <span class="text-[hsl(225,20%,60%)] text-lg"
+            >/
+            <span>{{ isYearlyBilling ? 'Year' : 'Month' }}</span>
+          </span>
         </h1>
       </div>
       <div class="relative flex justify-center items-center text-xs md:text-sm gap-5">
